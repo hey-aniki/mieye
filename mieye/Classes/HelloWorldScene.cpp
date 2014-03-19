@@ -6,7 +6,7 @@ Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
-    
+
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
 
@@ -26,7 +26,7 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
+
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Point origin = Director::getInstance()->getVisibleOrigin();
 
@@ -39,7 +39,7 @@ bool HelloWorld::init()
                                            "CloseNormal.png",
                                            "CloseSelected.png",
                                            CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-    
+
 	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
                                 origin.y + closeItem->getContentSize().height/2));
 
@@ -53,7 +53,7 @@ bool HelloWorld::init()
 
     // add a label shows "Hello World"
     // create and initialize a label
-    
+
     //auto label = LabelTTF::create("Hello World", "Arial", 24);
     //
     //// position the label on the center of the screen
@@ -71,14 +71,30 @@ bool HelloWorld::init()
 
     //// add the sprite as a child to this layer
     //this->addChild(sprite, 0);
-    //
-    CCTMXTiledMap *simple_map = CCTMXTiledMap::create("simplexx.tmx");
-    this -> addChild(simple_map);
+
+    CCTMXTiledMap *map = CCTMXTiledMap::create("newtiled.tmx");
+    this->addChild(map, 0);
     return true;
 }
 
 
-void HelloWorld::menuCloseCallback(Object* pSender)
+CCAnimation *HelloWorld::createAnimationByDirection(HeroDirection direction)
+{
+    CCTexture2D *heroTexture = CCTextureCache::sharedTextureCache() -> addImage("hero.png");
+    cocos2d::Vector<cocos2d::SpriteFrame *> animFrames(4);
+    for(int i = 0; i < 4; i++){
+        CCSpriteFrame *frame = CCSpriteFrame::createWithTexture(
+            heroTexture,
+            cocos2d::CCRectMake(32 * i, 32 * direction, 32, 32)
+        );
+        animFrames.pushBack(frame);
+    }
+    CCAnimation *animation = CCAnimation::createWithSpriteFrames(animFrames, 0.2f);
+    animFrames.clear();
+}
+
+
+void HelloWorld::menuCloseCallback(Ref* pSender)
 {
     Director::getInstance()->end();
 
