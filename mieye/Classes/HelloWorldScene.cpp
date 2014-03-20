@@ -36,9 +36,9 @@ bool HelloWorld::init()
 
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+        "CloseNormal.png",
+        "CloseSelected.png",
+        CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
 
 	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
                                 origin.y + closeItem->getContentSize().height/2));
@@ -48,49 +48,52 @@ bool HelloWorld::init()
     menu->setPosition(Point::ZERO);
     this->addChild(menu, 1);
 
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    //auto label = LabelTTF::create("Hello World", "Arial", 24);
-    //
-    //// position the label on the center of the screen
-    //label->setPosition(Point(origin.x + visibleSize.width/2,
-    //                        origin.y + visibleSize.height - label->getContentSize().height));
-
-    //// add the label as a child to this layer
-    //this->addChild(label, 1);
-
-    //// add "HelloWorld" splash screen"
-    //auto sprite = Sprite::create("HelloWorld.png");
-
-    //// position the sprite on the center of the screen
-    //sprite->setPosition(Point(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-    //// add the sprite as a child to this layer
-    //this->addChild(sprite, 0);
-
-    CCTMXTiledMap *map = CCTMXTiledMap::create("newtiled.tmx");
+    auto map = cocos2d::TMXTiledMap::create("newtiled.tmx");
     this->addChild(map, 0);
+
+    cocos2d::Texture2D *heroTexture = cocos2d::TextureCache::sharedTextureCache() -> addImage("hero.png");
+    auto initFrame = cocos2d::SpriteFrame::createWithTexture(
+        heroTexture,
+        cocos2d::Rect(0, 0, 32, 32)
+    );
+    auto hero = cocos2d::Sprite::createWithSpriteFrame(initFrame);
+    hero->setPosition(cocos2d::Point(32 + 32 / 2,32 + 32 / 2));
+    this->addChild(hero);
+
+    mWalkAnimation = cocos2d::Vector<cocos2d::Animation*>(4);
+    mWalkAnimation.insert(kDown, createAnimationByDirection(kDown));
+    mWalkAnimation.insert(kLeft, createAnimationByDirection(kLeft));
+    mWalkAnimation.insert(kRight, createAnimationByDirection(kRight));
+    mWalkAnimation.insert(kUp, createAnimationByDirection(kUp));
+    cocos2d::Animate *animate = cocos2d::Animate::create(mWalkAnimation.at(kDown));
+    hero->runAction(cocos2d::RepeatForever::create(animate));
+
     return true;
 }
 
-
-CCAnimation *HelloWorld::createAnimationByDirection(HeroDirection direction)
+HelloWorld::~HelloWorld()
 {
-    CCTexture2D *heroTexture = CCTextureCache::sharedTextureCache() -> addImage("hero.png");
+    for(auto a : mWalkAnimation){
+        a -> release();
+    }
+    mWalkAnimation.clear();
+}
+
+
+cocos2d::Animation *HelloWorld::createAnimationByDirection(HeroDirection direction)
+{
+    cocos2d::Texture2D *heroTexture = cocos2d::TextureCache::sharedTextureCache() -> addImage("hero.png");
     cocos2d::Vector<cocos2d::SpriteFrame *> animFrames(4);
     for(int i = 0; i < 4; i++){
-        CCSpriteFrame *frame = CCSpriteFrame::createWithTexture(
+        cocos2d::SpriteFrame *frame = cocos2d::SpriteFrame::createWithTexture(
             heroTexture,
-            cocos2d::CCRectMake(32 * i, 32 * direction, 32, 32)
+            cocos2d::Rect(32 * i, 32 * direction, 32, 32)
         );
         animFrames.pushBack(frame);
     }
-    CCAnimation *animation = CCAnimation::createWithSpriteFrames(animFrames, 0.2f);
-    animFrames.clear();
+    cocos2d::Animation *animation = cocos2d::Animation::createWithSpriteFrames(animFrames, 0.2f);
+    animation -> retain();
+    return animation;
 }
 
 

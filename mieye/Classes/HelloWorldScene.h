@@ -7,7 +7,7 @@ typedef enum {
     kDown = 0,
     kLeft = 1,
     kRight = 2,
-    kUp = 3,
+    kUp = 3
 } HeroDirection;
 
 class HelloWorld : public cocos2d::Layer
@@ -25,7 +25,11 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 
-    cocos2d::CCAnimation *createAnimationByDirection(HeroDirection direction);
+    cocos2d::Animation *createAnimationByDirection(HeroDirection direction);
+
+    cocos2d::Vector<cocos2d::Animation*> mWalkAnimation;
+
+    ~HelloWorld();
 };
 
 #endif // __HELLOWORLD_SCENE_H__
