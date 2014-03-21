@@ -57,8 +57,9 @@ bool HelloWorld::init()
         cocos2d::Rect(0, 0, 32, 32)
     );
     auto hero = cocos2d::Sprite::createWithSpriteFrame(initFrame);
-    hero->setPosition(cocos2d::Point(32 + 32 / 2,32 + 32 / 2));
-    this->addChild(hero);
+    hero->setAnchorPoint(Point(0, 0));
+    hero->setPosition(cocos2d::Point(32, 32));
+    map->addChild(hero);
 
     mWalkAnimation = cocos2d::Vector<cocos2d::Animation*>(4);
     mWalkAnimation.insert(kDown, createAnimationByDirection(kDown));
@@ -67,6 +68,10 @@ bool HelloWorld::init()
     mWalkAnimation.insert(kUp, createAnimationByDirection(kUp));
     cocos2d::Animate *animate = cocos2d::Animate::create(mWalkAnimation.at(kDown));
     hero->runAction(cocos2d::RepeatForever::create(animate));
+
+    map->setPosition(Point(
+        (visibleSize.width - map->getMapSize().width * map->getTileSize().width) / 2,
+        (visibleSize.height - map->getMapSize().height * map->getTileSize().height) / 2));
 
     return true;
 }
