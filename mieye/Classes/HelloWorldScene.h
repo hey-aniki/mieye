@@ -22,12 +22,32 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
 
+    void MoveCallback(cocos2d::Ref* pSender);
+
+    void OnWalkDone(Node *target, void *data);
+
+    void SetFacingDirection(HeroDirection direction);
+
+    cocos2d::Point TileCoordToPosition(cocos2d::Point tilecoord);
+
+    cocos2d::Point PositionToTileCoord(cocos2d::Point position);
+
+    void ScenceScroll(cocos2d::Point reference_position);
+
+    void update(float dt);
+
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 
     cocos2d::Animation *createAnimationByDirection(HeroDirection direction);
 
-    cocos2d::Vector<cocos2d::Animation*> mWalkAnimation;
+    cocos2d::Vector<cocos2d::Animation*> walk_animation_;
+
+    cocos2d::Sprite *hero_;
+
+    cocos2d::TMXTiledMap *map_;
+
+    bool hero_is_walking_;
 
     ~HelloWorld();
 };
