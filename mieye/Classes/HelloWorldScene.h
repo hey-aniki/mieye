@@ -10,6 +10,12 @@ typedef enum {
     kUp = 3
 } HeroDirection;
 
+typedef enum {
+    kNone = 1,
+    kWall,
+    kEnemy
+} CollisionType;
+
 class HelloWorld : public cocos2d::Layer
 {
 public:

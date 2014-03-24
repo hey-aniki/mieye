@@ -225,3 +225,21 @@ cocos2d::Point HelloWorld::PositionToTileCoord(cocos2d::Point position)
             - position.y) / map_->getTileSize().height;
     return cocos2d::Point(x, y);
 }
+
+
+CollisionType HelloWorld::checkCollision(cocos2d::Point sprite_position)
+{
+    cocos2d::Point tile_coord = PositionToTileCoord(sprite_position);
+    if(
+        sprite_position.x < 0
+        || tile_coord.x > map_->getMapSize().width - 1
+        || sprite_position.y < 0
+        || tile_coord.y > map_->getMapSize().height - 1)
+        return kWall;
+
+    int tile_gid = map_->layerNamed("wall")->tileGIDAt(tile_coord);
+    if(tile_gid){
+        return kWall;
+    }
+    return kNone;
+}
