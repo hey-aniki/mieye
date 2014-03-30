@@ -16,7 +16,19 @@ typedef enum {
     kEnemy
 } CollisionType;
 
-class HelloWorld : public cocos2d::Layer
+
+class PathFindingHelperNode
+{
+public:
+    unsigned char path_len;
+    unsigned char previous;
+    unsigned char visited;
+    unsigned char pre_move;
+};
+
+typedef PathFindingHelperNode PathNode;
+
+class GameLayer : public cocos2d::Layer
 {
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -30,6 +42,14 @@ public:
 
     void MoveCallback(cocos2d::Ref* pSender);
 
+    CollisionType CheckCollision(cocos2d::Point sprite_position);
+
+    bool TouchAndMove(cocos2d::Touch* touch, cocos2d::Event* event);
+
+    void MoveOneStep(HeroDirection direction);
+
+    void MoveHeroAlong();
+
     void OnWalkDone(Node *target, void *data);
 
     void SetFacingDirection(HeroDirection direction);
@@ -42,8 +62,10 @@ public:
 
     void update(float dt);
 
+    void UpdateHeroPath(cocos2d::Point target);
+
     // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    CREATE_FUNC(GameLayer);
 
     cocos2d::Animation *createAnimationByDirection(HeroDirection direction);
 
@@ -53,9 +75,19 @@ public:
 
     cocos2d::TMXTiledMap *map_;
 
+    std::deque<HeroDirection> hero_move_path_;
+
+    cocos2d::Point hero_next_position_;
+
     bool hero_is_walking_;
 
-    ~HelloWorld();
+    ~GameLayer();
+
+private:
+    bool CheckNode(cocos2d::Point cur, cocos2d::Point next,
+         PathNode& cur_map_node, PathNode& next_map_node,
+         HeroDirection move_direction);
 };
+
 
 #endif // __HELLOWORLD_SCENE_H__
