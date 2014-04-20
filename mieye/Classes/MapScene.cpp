@@ -169,6 +169,7 @@ void GameLayer::UpdateHeroPath(Point target)
     else
         start_point = PositionToTileCoord(hero_->getPosition());
     visit_node.push_back(start_point);
+    cocos2d::log("start at %f, %f", start_point.x, start_point.y);
 
     cocos2d::Point next;
     bool not_checked;
@@ -288,7 +289,9 @@ bool GameLayer::TouchAndMove(Touch* touch, Event* event)
 {
     Point p = this->convertTouchToNodeSpace(touch);
     cocos2d::log("on touch event get on %f, %f", p.x, p.y);
-    UpdateHeroPath(cocos2d::Point(1,5));
+    UpdateHeroPath(PositionToTileCoord(p));
+    Point px = PositionToTileCoord(p);
+    cocos2d::log("to tile coord %f, %f", px.x, px.y);
     MoveHeroAlong();
     return true;
 }
@@ -412,8 +415,9 @@ void GameLayer::update(float dt)
 cocos2d::Point GameLayer::PositionToTileCoord(cocos2d::Point position)
 {
     int x = position.x / map_->getTileSize().width;
-    int y = (((map_->getMapSize().height - 1) * map_->getTileSize().height)
-            - position.y) / map_->getTileSize().height;
+    int y = map_->getMapSize().height
+            * map_->getTileSize().height / map_->getTileSize().height
+            - (int)(position.y / map_->getTileSize().height) - 1;
     return cocos2d::Point(x, y);
 }
 

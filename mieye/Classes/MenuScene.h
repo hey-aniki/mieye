@@ -12,6 +12,6 @@ public:
 
 private:
     void startGameCallback(cocos2d::Ref *sender);
-}
+};
 
 #endif // __MENU_SCENE_H__

@@ -3,12 +3,36 @@
 
 #include "cocos2d.h"
 
+typedef enum {
+    kDown = 0,
+    kLeft = 1,
+    kRight = 2,
+    kUp = 3
+} HeroDirection;
+
+typedef enum {
+    kNone = 1,
+    kWall,
+    kEnemy
+} CollisionType;
+
+class PathFindingHelperNode
+{
+public:
+    unsigned char path_len;
+    unsigned char previous;
+    unsigned char visited;
+    unsigned char pre_move;
+};
+
+typedef PathFindingHelperNode PathNode;
+
 class MapScene: public cocos2d::Scene {
 public:
     virtual bool init();
     ~MapScene(void);
-    CREATE_FUNC(MenuLayer);
-}
+    CREATE_FUNC(MapScene);
+};
 
 class GameLayer : public cocos2d::Layer
 {

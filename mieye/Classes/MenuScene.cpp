@@ -19,23 +19,24 @@ Scene* MenuLayer::createScene()
 }
 
 
-bool MenuLayer::init()
-{
-    if(!Layer::init()){
-        return false;
-    }
-    auto start_game_button = MenuItemFont::create("Start Game", MenuLayer::startGameCallback);
-    auto menu = Menu::create(start_game_button, NULL);
-    menu->alignItemsVerticallyWithPadding(20);
-    this->addChild(menu);
-}
-
-
 void MenuLayer::startGameCallback(cocos2d::Ref *sender)
 {
     auto scene = MapScene::create();
     TransitionScene *transition = TransitionFade::create(1, scene);
     Director::getInstance()->replaceScene(transition);
+}
+
+
+bool MenuLayer::init()
+{
+    if(!Layer::init()){
+        return false;
+    }
+    auto start_game_button = MenuItemFont::create("Start Game", CC_CALLBACK_1(MenuLayer::startGameCallback, this));
+    auto menu = Menu::create(start_game_button, NULL);
+    menu->alignItemsVerticallyWithPadding(20);
+    this->addChild(menu);
+    return true;
 }
 
 
